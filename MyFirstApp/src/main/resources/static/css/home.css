@@ -1,0 +1,30 @@
+@charset "UTF-8";
+
+textarea {
+	width: 200px;
+	height: 170px;
+}
+
+#image {
+	width: 50%;
+	height: 50%;
+}
+
+.contents {
+	overflow: hidden;
+}
+
+.left {
+	float: left;
+	margin-right: 60px;
+}
+
+.right {
+	overflow: hidden;
+	margin-left: 30px;
+}
+
+video {
+	width: 20%;
+	height: 20%;
+}

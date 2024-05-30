@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<title>MyApp</title>
+	<link rel="stylesheet" type="text/css" href="/css/myapp.css" />
+</head>
+
+<body>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"
+		integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"
+		integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<p>
+		<input type="text" placeholder="ルームIDを入力してね。" id="text1" maxlength="5" />
+		<input type="button" value="接続" onclick="clickBtn1()">
+		<input type="button" value="切断" onclick="clickBtn99()">
+		<hr>
+		<input type="button" value="開始する" onclick="clickBtn2()">
+		<input type="button" value="追加で引く" onclick="clickBtn3()">
+	</p>
+	<hr>
+	
+	<!--メイン画面-->
+	<div style="text-align: center;" id="messages">
+		
+		<h2>あなたKOKURIパワー：</h2>
+		<h1 id="myPower" style="color:blue;"></h1>
+
+		<h2 id="enemy">相手のKOKURIパワー：</h2>
+		<h1 id="enemyPower" style="color:red;"></h1>
+
+
+		<h2>【あなたの手札】</h2>
+		<p style="font-size: 40px;" id="disp"></p>
+	</div>
+	
+	<script>
+		//接続ボタンを推したときの処理。
+		let stompClient = null;
+		function clickBtn1() {
+			const socket = new SockJS('/point1');
+			stompClient = Stomp.over(socket);
+			stompClient.connect({}, function (frame) {
+
+				/////////////コールバック関数(Springからのリターンを受け取る所)////////
+				stompClient.subscribe('/topic/enemy', function (result) {
+					document.getElementById('enemyPower').innerText = result.body;
+					console.log(result.body);
+				});
+				////////////////////////////////////////////////////////////////////////
+
+
+				/////////////「仕掛け」コールバック関数(Springからのリターンを受け取る所)////////
+				stompClient.subscribe('/topic/gameover', function (result) {
+					const myPower = document.getElementById("myPower").innerText;
+
+					const num = parseInt(myPower);
+					if(num < 350) {
+						alert('あなたの勝利です！！アットホーム！');
+					} else {
+						alert('GAMEOVERあなたは負けました。さようなら');
+					}
+					
+					console.log(result.body);
+				});
+				
+				////////////////////////////////////////////////////////////////////////
+
+			});
+		}
+		
+		function clickBtn2() {
+			cardPick();
+			cardPick();
+			const myPower = document.getElementById('myPower').innerText;
+			stompClient.send('/app/sendPower', {}, myPower);
+		}
+		
+		function clickBtn3() {
+			cardPick();
+			const myPower = document.getElementById('myPower').innerText;
+			stompClient.send('/app/sendPower', {}, myPower);
+		}
+
+
+		/////////カード取得処理//////////////
+		function cardPick() {
+			//画像のURLを設定
+			const image1 = "https://www.itc.ac.jp/_cms/wp-content/themes/itc1.1.0/assets/img/teacher/img-teacher-takenoya-y-on.jpg";
+			const image2 = "https://www.itc.ac.jp/_cms/wp-content/themes/itc1.1.0/assets/img/teacher/img-teacher-suehara-a-on.jpg";
+			const image3 = "https://www.itc.ac.jp/_cms/wp-content/themes/itc1.1.0/assets/img/teacher/img-teacher-yoshinaga-t-on.jpg";
+			const image4 = "https://www.itc.ac.jp/_cms/wp-content/themes/itc1.1.0/assets/img/teacher/img-teacher-nemoto-k-on.jpg";
+			const image5 = "https://www.itc.ac.jp/_cms/wp-content/themes/itc1.1.0/assets/img/teacher/img-teacher-ishihama-t-on.jpg";
+			const image6 = "https://www.itc.ac.jp/_cms/wp-content/themes/itc1.1.0/assets/img/teacher/img-teacher-watabe-m-on.jpg";
+			const image7 = "https://www.itc.ac.jp/_cms/wp-content/themes/itc1.1.0/assets/img/teacher/img-teacher-numata-s-on.jpg";
+			const image8 = "https://www.itc.ac.jp/_cms/wp-content/themes/itc1.1.0/assets/img/teacher/img-teacher-ono-k-on.jpg";
+			const image9 = "https://www.itc.ac.jp/_cms/wp-content/themes/itc1.1.0/assets/img/teacher/img-teacher-shimanouchi-j-on.jpg";
+
+			//上記画像のURLを配列に突っ込む。
+			let imageArray = [image1, image2, image3, image4, image5, image6, image7, image8, image9];
+
+			//カードのステータスを設定
+			const sta1 = 100;
+			const sta2 = 90;
+			const sta3 = 50;
+			const sta4 = 50;
+			const sta5 = 70;
+			const sta6 = 20;
+			const sta7 = 100;
+			const sta8 = 70;
+			const sta9 = 50;
+
+			//ステータスを配列に突っ込む。
+			let staArray = [sta1, sta2, sta3, sta4, sta5, sta6, sta7, sta8, sta9];
+
+
+			//配列の添え字として使うための0から8の範囲の整数を取得
+			const num = Math.floor(Math.random() * 9);
+
+			//imageタグを生成
+			const imgTag = document.createElement("img");
+			
+			//srcに画像のURLを設定
+			imgTag.src = imageArray[num];
+
+			//見た目整え用
+			imgTag.style.width = "15%;";
+
+			//表示領域(idがdispの要素)に追記(appendchild)
+			document.getElementById("disp").appendChild(imgTag);
+
+			//カードステータス用にspanタグ生成
+			const spanTag = document.createElement("span");
+
+			//見た目整え用
+			spanTag.style.fontSize = "30px;";
+			spanTag.textContent = staArray[num];
+			
+			//表示領域(idがdispの要素)に追記(appendchild)
+			document.getElementById("disp").appendChild(spanTag);
+
+
+			//KOKURIパワー欄の更新
+			let kokuriPower = document.getElementById("myPower").innerText;
+			kokuriPower = Number(kokuriPower) + Number(staArray[num]);
+			document.getElementById("myPower").innerText = kokuriPower;
+		}
+
+
+		////////「切断」ボタンを推したときの処理/////////////
+		function clickBtn99() {
+			if (stompClient !== null) {
+				stompClient.disconnect();
+				stompClient = null;
+			}
+			console.log("Disconnected");
+		}
+		/////////////////////////////////////////////////////
+	</script>
+</body>
+
+</html>

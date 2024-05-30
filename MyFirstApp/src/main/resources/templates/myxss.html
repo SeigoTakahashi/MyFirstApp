@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XSSお試し用。</title>
+</head>
+
+<body>
+    <h1>XSSダメ絶対</h1>
+
+    <form th:action="@{/xssresult}" method="GET">
+        <label for="message">メッセージを入力してください</label><br>
+        <input type="text" id="message" name="message"><br><br>
+        <input type="submit" value="送る！">
+    </form>
+
+    <h2>↓入力結果↓</h2>
+<!--    <div>[(${userMessage})]</div>-->
+<!--	対策済み版-->
+	<div th:text="${userMessage}"></div>
+</body>
+
+</html>	

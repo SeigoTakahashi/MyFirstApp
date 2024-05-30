@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	<h2>＜OR mapperを使ってDB操作＞</h2>
+	<h3>登録 or 更新！</h3>
+	<h3>※既に登録されてるブックIDを入力すれば更新。それ以外なら新規登録されるよ。</h3>
+	<form th:action="@{/myrecordsInsUpd}" method="POST" enctype="multipart/form-data">
+		ID(数値)：<input type="number" name="record_id"> <br>
+		名前：<input type="text" name="record_name"> <br>
+		ゲーム数(数値)：<input type="number" name="game_count"> <br>
+		勝利数：<input type="text" name="win"> <br>
+		<input type="submit">
+	</form>
+	
+	<hr>
+	<h3>削除！</h3>
+	<form th:action="@{/myrecordsDelete}" method="POST" enctype="multipart/form-data">
+		削除対象のブックID(数値)：<input type="number" name="record_id"> <br>
+		<input type="submit">
+	</form>
+
+	<hr>	
+	
+	<h3>現在のデータ一覧:</h3>
+	<br>
+	<table>
+		<tr>
+			<th>ID</th>
+			<th>ユーザ名</th>
+			<th>ゲーム数</th>
+			<th>勝数</th>
+		</tr>
+		<tr th:each="record : ${recordslist}">
+			<td th:text="${record.user_id}"></td>
+			<td th:text="${record.user_name}"></td>
+			<td th:text="${record.game_count}"></td>
+			<td th:text="${record.win}"></td>
+		</tr>
+	</table>
+</body>
+</html>

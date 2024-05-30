@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<title>MyAppFirst</title>
+</head>
+
+<body>
+	MyAppFirst
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"
+		integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"
+		integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<p>
+		<input type="text" placeholder="ルームIDを入力してね。" id="text1" maxlength="5" />
+		<input type="button" value="接続" onclick="clickBtn1()">
+		<input type="button" value="切断" onclick="clickBtn99()">
+	</p>
+	<p>
+		<input type="text" placeholder="メッセージを送ろう！" id="msg" maxlength="50" />
+		<input type="button" value="送信する。" onclick="clickBtn2()">
+	</p>
+
+	<p>
+		<input type="text" placeholder="練習問題！" id="pra1" maxlength="50" />
+		<input type="button" value="送信する。" onclick="clickBtn3()">
+	</p>
+
+	<p>
+		<input type="text" placeholder="練習問題だぞー" id="pra2" maxlength="50" />
+		<input type="button" value="送信する。" onclick="clickBtn4()">
+	</p>
+
+	<hr>
+
+	<div id="messages">
+		【受信メッセージ】
+
+	</div>
+	<script>
+		let stompClient = null;
+		function clickBtn1() {
+			const socket = new SockJS('/point1');
+			stompClient = Stomp.over(socket);
+			stompClient.connect({}, function (frame) {
+
+				/////////////コールバック関数(Springからのリターンを受け取る所)///////////
+				stompClient.subscribe('/topic/client1', function (result) {
+					//pタグを生成
+					const newTag = document.createElement("p");
+					newTag.textContent = result.body;
+
+					//divタグ内に作ったpタグを突っ込む。
+					document.getElementById("messages").appendChild(newTag);
+					console.log(result.body);
+				});
+				////////////////////////////////////////////////////////////////////////
+
+				/////////////練習問題用///////////
+				stompClient.subscribe('/topic/clientpra1', function (result) {
+					const newTag = document.createElement("p");
+					newTag.textContent = result.body;
+
+					document.getElementById("messages").appendChild(newTag);
+					console.log(result.body);
+				});
+				////////////////////////////////////////////////////////////////////////
+
+				/////////////練習問題用///////////
+				stompClient.subscribe('/topic/clientpra2', function (result) {
+					const newTag = document.createElement("p");
+					newTag.textContent = result.body;
+					newTag.style.color = "red";
+					document.getElementById("messages").appendChild(newTag);
+					console.log(result.body);
+				});
+				////////////////////////////////////////////////////////////////////////
+
+			});
+		}
+
+		////////////送信ボタンを推したときの処理/////////////
+		function clickBtn2() {
+			const msg = document.getElementById("msg").value;
+			stompClient.send('/app/first', {}, msg);
+		}
+		/////////////////////////////////////////////////////
+
+		////////////練習問題用/////////////
+		function clickBtn3() {
+			const pra1 = document.getElementById("pra1").value;
+			stompClient.send('/app/webpra', {}, pra1);
+		}
+		/////////////////////////////////////////////////////
+
+		////////////練習問題用/////////////
+		function clickBtn4() {
+			const pra2 = document.getElementById("pra2").value;
+			stompClient.send('/app/webprapra', {}, pra2);
+		}
+		/////////////////////////////////////////////////////
+
+		////////「切断」ボタンを推したときの処理/////////////
+		function clickBtn99() {
+			if (stompClient !== null) {
+				stompClient.disconnect();
+				stompClient = null;
+			}
+			console.log("Disconnected");
+		}
+		/////////////////////////////////////////////////////
+	</script>
+</body>
+
+</html>

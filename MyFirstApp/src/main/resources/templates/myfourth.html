@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/css/myfourth.css" />
+	<script src="/js/myfourth.js"></script>
+	<title>Insert title here</title>
+</head>
+
+<body>
+	<form th:action="@{/myfourth}" method="POST">
+
+		あなたの名前：<input type="text" name="yourname"> <br>
+		私の名前：<input type="text" name="myname"><br>
+		君の名前：<input type="text" name="practice"><br>
+		<input type="submit">
+	</form>
+	<hr>
+	↓入力した内容↓
+	<p th:text = "${sample1}"></p>
+	<p th:text = "${sample2}"></p>
+	<p th:text = "${sample3}"></p>
+
+</body>
+
+</html>

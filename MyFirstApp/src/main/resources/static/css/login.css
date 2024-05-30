@@ -1,0 +1,18 @@
+@charset "UTF-8";
+
+form {
+	margin: auto;
+	margin-top: 120px;
+}
+
+table {
+	margin: auto;
+}
+
+form div {
+	text-align: center;
+}
+
+td {
+	text-align: right;
+}

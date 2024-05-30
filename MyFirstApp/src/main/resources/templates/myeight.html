@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	DBの内容:<br>
+	<th:block th:each="result : ${selectResult}">
+		<p th:text="${result.user_id}"></p>
+		<p th:text="${result.user_name}"></p>
+		<p th:text="${result.user_pass}"></p>
+	</th:block>
+</body>
+
+</html>

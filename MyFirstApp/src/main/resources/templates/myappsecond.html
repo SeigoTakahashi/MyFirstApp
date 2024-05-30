@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<title>MyAppSecond</title>
+</head>
+
+<body>
+	MyApp2nd
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<p>
+		<input type="text" placeholder="ルームIDを入力してね。" id="text1" maxlength="5" />
+		<input type="button" value="接続" onclick="clickBtn1()">
+		<input type="button" value="切断" onclick="clickBtn99()">
+	</p>
+	<p>
+		<input type="text" placeholder="メッセージ" id="msg" maxlength="50" />
+		<input type="button" value="送信する。" onclick="clickBtn2()">
+	</p>
+	
+		
+	<hr>
+	
+	<div id="messages">
+	【受信メッセージ】
+	
+	</div>
+	<script>
+		let stompClient = null;
+		function clickBtn1() {
+			const socket = new SockJS('/point1');
+			stompClient = Stomp.over(socket);
+			stompClient.connect({}, function (frame) {
+				
+				/////////////コールバック関数(Springからのリターンを受け取る所)///////////
+				stompClient.subscribe('/topic/client2', function (result) {
+					//pタグを生成
+					const newTag = document.createElement("p");
+					newTag.textContent = result.body;
+					
+					//divタグ内に作ったpタグを突っ込む。
+					document.getElementById("messages").appendChild(newTag);
+					console.log(result.body);
+				});
+				////////////////////////////////////////////////////////////////////////
+				
+			});
+		}
+		
+		////////////送信ボタンを推したときの処理/////////////
+		function clickBtn2() {
+			const msg = document.getElementById("msg").value;
+			stompClient.send('/app/second', {}, msg);
+		}
+		/////////////////////////////////////////////////////
+
+		////////「切断」ボタンを推したときの処理/////////////
+		function clickBtn99() {
+			if (stompClient !== null) {
+				stompClient.disconnect();
+				stompClient = null;
+			}
+			console.log("Disconnected");
+		}
+		/////////////////////////////////////////////////////
+	</script>
+</body>
+</html>

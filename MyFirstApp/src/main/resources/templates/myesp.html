@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+
+<body>
+	<h2>復習問題(ORMapper編)</h2>
+	<h3>①一覧表示</h3>
+
+	<table class="table">
+		<tr>
+			<th>日本語</th>
+			<th>スペイン語</th>
+		</tr>
+		<!-- DBの値を表示する。コメントを外してね。冊子の11ページ参考に。-->
+		<tr th:each="tango : ${resultList}">
+			<td th:text="${tango.jpn}"></td>
+			<td th:text="${tango.esp}"></td>
+		</tr>
+
+	</table>
+
+	<hr>
+
+	<h3>②登録&更新用form</h3>
+	<h4>　日本語訳が既にDBにある場合は、更新になります。</h4>
+	<br>
+	<!-- formタグは冊子の6ページ、７ページを見ながら考えてみると良いかも！-->
+	<form th:action="@{/myespInsUpd}" method="POST">
+		日本語訳
+		<!-- ここにinputタグ -->
+		<input type="text" name="jpn">
+		スペイン語訳
+		<!-- ここにinputタグ -->
+		<input type="text" name="esp">
+		<input type="submit" value="登録or更新する">
+	</form>
+
+	<hr>
+	<h3>③追加問題用form</h3>
+	<form th:action="@{/myespTuika}" method="POST">
+		日本語で検索（あいまい検索）
+		<input type="text" name="jpn">
+
+		<input type="submit" value="検索する">
+		
+
+	</form>
+
+</body>
+
+</html>

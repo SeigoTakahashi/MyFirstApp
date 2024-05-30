@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	<h2>＜練習問題だよ～～～～～＞</h2>
+	<h3>登録 or 更新！</h3>
+	<h3>※既に登録されてるドリンクIDを入力すれば更新。それ以外なら新規登録されるよ。</h3>
+	<form th:action="@{/mythirteenpraIns}" method="POST" enctype="multipart/form-data">
+		ドリンクID(数値)：<input type="number" name="drink_id"> <br>
+		ドリンク名：<input type="text" name="drink_name"> <br>
+		価格(数値)：<input type="number" name="drink_price"> <br>
+		<input type="submit">
+	</form>
+	
+	<hr>
+	<h3>削除！</h3>
+	<form th:action="@{/mythirteenPraDel}" method="POST" enctype="multipart/form-data">
+		削除対象のドリンクID(数値)：<input type="number" name="drink_id"> <br>
+		<input type="submit">
+	</form>
+
+	<hr>	
+	
+	<h3>現在のデータ一覧:</h3>
+	<br>
+	<table>
+		<tr>
+			<th>ID</th>
+			<th>ドリンク名</th>
+			<th>価格</th>
+		</tr>
+		<tr th:each="drink : ${drinkslist}">
+			<td th:text="${drink.drink_id}"></td>
+			<td th:text="${drink.drink_name}"></td>
+			<td th:text="${drink.drink_price}"></td>
+		</tr>
+	</table>
+</body>
+</html>

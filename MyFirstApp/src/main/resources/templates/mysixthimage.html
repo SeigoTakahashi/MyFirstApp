@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	<h3>ファイルアップロード</h3>
+	<form th:action="@{/mysixthimage}" method="POST" enctype="multipart/form-data">
+		<input type="file" name="myfile"><br>
+		<input type="file" name="mymy"><br>
+		<input type="submit">
+	</form>
+	<hr>
+	<br>
+	<h3>あなたがアップロードした画像</h3>
+	<img th:src="${'data:image/png;base64,' + encodedImage}">
+
+	<h3>あなたがアップロードした動画</h3>
+	<video style="width:800px;" autoplay controls>
+		<source th:src="${'data:image/mp4;base64,' + encodedImage}" type="video/mp4">
+	</video>
+</body>
+
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<link rel="stylesheet" href="/jsassets/style.css">
+	<link rel="stylesheet" href="/css/login.css">
+	<link rel="shortcut icon" href="/jsassets/favicon.ico">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	<header>
+		<div class="container">
+			<h1>ログイン</h1>
+		</div>
+	</header>
+	<main>
+		<div class="container" id="work">
+			<section>
+				<div id="work1">
+					<form th:action="@{/mylogin}" method="POST">
+						<table border="0">
+							<tr>
+								<td>ID</td>
+								<td><input type="text" name="ID" required="required"></td>
+							</tr>
+							<tr>
+								<td>PassWord</td>
+								<td><input type="text" name="PW" required="required"></td>
+							</tr>
+						</table>
+						<br>
+						<div><input type="submit" value="ログイン"></div>
+					</form>
+
+				</div>
+			</section>
+		</div>
+	</main>
+	<footer>
+		<div class="container">
+			<p>Javaフレームワーク</p>
+		</div>
+	</footer>
+</body>
+
+</html>

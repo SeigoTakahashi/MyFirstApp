@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<title>MyApp</title>
+</head>
+
+<body>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<p>
+		<input type="text" placeholder="ルームIDを入力してね。" id="text1" maxlength="5" />
+		<input type="button" value="接続" onclick="clickBtn1()">
+		<input type="button" value="切断" onclick="clickBtn3()">
+	</p>
+	<p>
+		<input type="text" placeholder="お題" id="odai" maxlength="50" />
+		<input type="button" value="出題する。" onclick="clickBtn4()">
+	</p>	
+	<p>	
+		<input type="text" placeholder="解答" id="msg" maxlength="50" />
+		<input type="button" value="答える！" onclick="clickBtn2()">
+	</p>
+	
+
+	
+	<hr>
+	【受信メッセージ】
+	<div id="messages">
+		
+		
+	</div>
+	<script>
+		
+		//接続ボタンを推したときの処理。
+		//(今は分からなくてOK) SpringのmeesageBrokerを叩く。
+		let stompClient = null;
+		function clickBtn1() {
+			const socket = new SockJS('/point1');
+			stompClient = Stomp.over(socket);
+			stompClient.connect({}, function (frame) {
+				//コールバック関数
+				stompClient.subscribe('/topic/client1', function (result) {
+					
+					//ここを見て！//
+					//pタグを新しく生成
+					const newTag = document.createElement("p");
+					newTag.textContent = result.body;
+					
+					
+					//divタグ内に作ったpタグを突っ込む。
+					document.getElementById("messages").appendChild(newTag);
+					console.log(result.body);
+					
+					const newTag2 = document.createElement("button");
+					newTag2.textContent = "解答する";
+					
+					
+					//divタグ内に作ったpタグを突っ込む。
+					document.getElementById("messages").appendChild(newTag2);
+				});
+				//コールバック関数
+				stompClient.subscribe('/topic/client2', function (result) {
+					
+					//ここを見て！//
+					//pタグを新しく生成
+					const newTag = document.createElement("p");
+					newTag.textContent = result.body;
+					newTag.style.color = "red";
+					
+					//divタグ内に作ったpタグを突っ込む。
+					document.getElementById("messages").appendChild(newTag);
+					console.log(result.body);
+				});
+			});
+		}
+		
+		//送信ボタンを推したとき処理。
+		//入力欄の文字を取得して、Springへ送信。
+		//送信先はURLが「/app/web1」
+		function clickBtn2() {
+			
+			const msg = document.getElementById("msg").value;
+			stompClient.send('/app/web1', {}, msg);
+		}
+		function clickBtn3() {
+			if (stompClient !== null) {
+				stompClient.disconnect();
+				stompClient = null;
+			}
+			console.log("Disconnected");
+		}
+				
+		function clickBtn4() {
+			const odai = document.getElementById("odai").value;
+			
+			stompClient.send('/app/odai', {}, odai);
+		}
+		
+	</script>
+</body>
+</html>

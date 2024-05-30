@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	ユーザー登録。
+	<form th:action="@{/myninth}" method="POST">
+
+		あなたのid(数値)：<input type="number" name="user_id"> <br>
+		あなたのパスワード：<input type="text" name="user_pass"> <br>
+		あなたの名前：<input type="text" name="user_name"> <br>
+		<input type="submit">
+	</form>
+	<hr>
+	DBの内容:<br>
+	<th:block th:each="result : ${selectResult}">
+		<p th:text="${result.user_id}"></p>
+		<p th:text="${result.user_name}"></p>
+		<p th:text="${result.user_pass}"></p>
+	</th:block>
+</body>
+
+</html>

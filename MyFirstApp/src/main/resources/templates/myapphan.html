@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<title>MyApp</title>
+	<link rel="stylesheet" type="text/css" href="/css/myapp.css" />
+</head>
+
+<body>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"
+		integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"
+		integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<p>
+		<input type="text" placeholder="ルームIDを入力してね。" id="text1" maxlength="5" />
+		<input type="button" value="接続" onclick="clickBtn1()">
+		<input type="button" value="切断" onclick="clickBtn99()">
+		<hr>
+		<input type="text" placeholder="名前を入力" id="playername">
+		<input type="button" value="反応する！！" onclick="clickBtn2()">
+		<input type="button" value="仕掛ける！！！" onclick="clickBtn3()">
+		
+	</p>
+	<a th:href="@{/myapphanlog}">ログを見る	。</a>
+	<hr>
+	<div id="messages">
+		反射王<br>
+		<p style="font-size: 150px;" id="disp">●</p>
+	</div>
+	<div>
+		<video id="videoElement" style="width: 200px;"></video>
+	</div>
+	<script>
+		//接続ボタンを推したときの処理。
+		//(今は分からなくてOK) SpringのmeesageBrokerを叩く。
+		let stompClient = null;
+		function clickBtn1() {
+			const socket = new SockJS('/point1');
+			stompClient = Stomp.over(socket);
+			stompClient.connect({}, function (frame) {
+
+				/////////////「反応」コールバック関数(Springからのリターンを受け取る所)////////
+				stompClient.subscribe('/topic/hannou', function (result) {
+					const newTag = document.createElement("p");
+
+					//メッセージをpタグ(newTag)に追加
+					newTag.textContent = result.body;
+
+					//メッセージを青くする処理を追加してね。
+					newTag.style.color = "blue";
+
+					//画面の●を白くさせる。
+					document.getElementById("disp").innerHTML = "●";
+
+					//divタグ内に作ったpタグを突っ込む。
+					document.getElementById("messages").appendChild(newTag);
+					console.log(result.body);
+				});
+				////////////////////////////////////////////////////////////////////////
+
+
+				/////////////「仕掛け」コールバック関数(Springからのリターンを受け取る所)////////
+				stompClient.subscribe('/topic/sikake', function (result) {
+					const newTag = document.createElement("p");
+
+					//メッセージをpタグ(newTag)に追加
+					newTag.textContent = result.body;
+
+					//メッセージを赤くする処理を追加してね。
+					newTag.style.color = "red";
+
+					//画面の●を白くさせる。
+					document.getElementById("disp").innerHTML = "〇"
+
+					//divタグ内に作ったpタグを突っ込む。
+					document.getElementById("messages").appendChild(newTag);
+					console.log(result.body);
+				});
+				////////////////////////////////////////////////////////////////////////
+
+			});
+		}
+
+		/////////反応するボタンを押した場合///////////
+		function clickBtn2() {
+			//画面からプレイヤーネーム取得
+			const pname = document.getElementById("playername").value;
+			//Controllerに送信
+			stompClient.send('/app/hannou', {}, pname);
+		}
+		/////////////////////////////////////////////////////
+
+
+		/////////仕掛けるボタンを押した場合///////
+		function clickBtn3() {
+			//①画面からプレイヤーネーム取得
+			const pname = document.getElementById("playername").value;
+			
+			//②WEBカメラの映像を取得
+			const base64Data = getVideoImageBase64();
+			
+			//③JSONデータを作る（①と②を1つのJSONにまとめる）
+			const sendData = JSON.stringify(
+				{'name':pname,'imageBase64':base64Data}
+			);
+			//Controllerに送信
+			stompClient.send('/app/sikake', {}, sendData);
+
+		}
+		/////////////////////////////////////////////////////
+
+		////////「リセット」ボタンを推したときの処理/////////////
+		function clickBtn98() {
+			//画面の●を白くさせる。
+			document.getElementById("disp").innerHTML = "●";
+		}
+		/////////////////////////////////////////////////////
+
+		////////「切断」ボタンを推したときの処理/////////////
+		function clickBtn99() {
+			if (stompClient !== null) {
+				stompClient.disconnect();
+				stompClient = null;
+			}
+			console.log("Disconnected");
+		}
+		/////////////////////////////////////////////////////
+	</script>
+	<script>
+		////映像データをbase64で取得するためのメソッド//////
+		function getVideoImageBase64() {
+			//videoタグのDOMを取得
+			var video = document.getElementById('videoElement');
+
+			//html5のcanvasタグを生成(canvasタグはグラフィックやアニメーションを描画するためのもの。)
+			//今回はこのタグにキャプチャした画像を張り付ける。
+			var canvas = document.createElement('canvas');
+
+			//重さを考慮してWEBカメラ映像を2dとして解釈させる。
+			var context = canvas.getContext('2d');
+
+			//canvasサイズを定義。ビデオタグの大きさに合わせる。
+			canvas.width = video.videoWidth;
+			canvas.height = video.videoHeight;
+
+			//canvasにWEBカメラの映像を描画する。
+			context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+			//canvasタグに張り付けた映像のURLを取得。
+			//imgタグのsrcを取得するのと同じイメージ。
+			//興味あるならconsole.log(imageDataURL)してみよおう。
+			var imageDataURL = canvas.toDataURL('image/jpeg');
+
+			// Base64データを取得。
+			var base64Data = imageDataURL.split(',')[1];
+
+			//呼び出し元にreturn
+			return base64Data;
+		}
+	</script>
+	<script>
+		//videoタグを読み込んで変数「video」に格納する。
+		const video = document.getElementById('videoElement');
+		//pcのカメラ＆マイクの利用許可を取る。(マイクは使わないけど)
+		navigator.mediaDevices
+			.getUserMedia({
+				video: true,
+				audio: false,
+			})
+			//接続に成功した場合、カメラを移す。
+			.then((stream) => {
+				video.srcObject = stream;
+				video.play();
+			})
+			//エラーが出たらconsoleに表示させる。
+			.catch((e) => {
+				console.log(e);
+			});
+	</script>
+</body>
+
+</html>

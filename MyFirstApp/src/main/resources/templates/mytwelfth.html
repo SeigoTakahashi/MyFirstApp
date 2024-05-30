@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+</head>
+<body>
+
+	DBの内容:<br>
+	<th:block th:each="user : ${userslist}">
+		<p th:text="${user.user_id}"></p>
+		<p th:text="${user.user_name}"></p>
+		<p th:text="${user.user_pass}"></p>
+	</th:block>	
+</body>
+</html>

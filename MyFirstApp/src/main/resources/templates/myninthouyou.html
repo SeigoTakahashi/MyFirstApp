@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	ユーザー登録。
+	<!--ヒント：↓の?????は送る場所を指定しているよ。今回はどのControllerのどのURLに送りたいのかな-->
+	<form th:action="@{/myninthouyou}" method="POST" enctype="multipart/form-data">
+
+		あなたのid(数値)：<input type="number" name="user_id"> <br>
+		あなたのパスワード：<input type="text" name="user_pass"> <br>
+		あなたの名前：<input type="text" name="user_name"> <br>
+		あなたのアイコン：<input type="file" name="upimage"><br>
+		<input type="submit">
+	</form>
+	<hr>
+	DBの内容:<br>
+	<th:block th:each="result : ${selectResult}">
+		<p th:text="${result.user_id}"></p>
+		<p th:text="${result.user_name}"></p>
+		<p th:text="${result.user_pass}"></p>
+		<!-- ヒント：↓の?????は画像を取り出した時の変数名が入るよ。
+ 例えばユーザ名を取り出したときの変数栄は「result.user_name」だね。
+ じゃあ画像は？・・・前回渡したプリントが参考になるはず！（ちゃんと書いてれば）
+ -->
+		<img th:src="${'data:image/png;base64,' + result.user_image}">
+	</th:block>
+</body>
+
+</html>

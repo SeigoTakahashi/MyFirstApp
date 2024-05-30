@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8" />
+	<title>MyAppFirst</title>
+</head>
+
+<body>
+	MyAppFirst
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"
+		integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"
+		integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<p>
+		<input type="text" placeholder="ルームIDを入力してね。" id="text1" maxlength="5" />
+		<input type="button" value="接続" onclick="clickBtn1()">
+		<input type="button" value="切断" onclick="clickBtn99()">
+	</p>
+	<p>
+		<input type="text" placeholder="名前" id="pname" maxlength="5" />
+		<input type="text" placeholder="練習問題用" id="msg" maxlength="5" />
+		<input type="button" value="キャプチャ！" onclick="clickBtn2()">
+	</p>
+	<hr>
+	<p id="user1"></p>
+	<img src="" id="live1">
+
+	<p id="user2"></p>
+	<img src="" id="live2">
+
+	<p id="user3"></p>
+	<img src="" id="live3">
+
+	<p id="user4"></p>
+	<img src="" id="live4">
+
+	<p id="user5"></p>
+	<img src="" id="live5">
+	【受信した画像】
+	<div id="messages"></div>
+	<video id="videoElement" style="width:100px;"></video>
+	<script>
+		let stompClient = null;
+		function clickBtn1() {
+			const socket = new SockJS('/point1');
+			stompClient = Stomp.over(socket);
+			stompClient.connect({}, function (frame) {
+
+				/////////////コールバック関数(Springからのリターンを受け取る所)///////////
+				stompClient.subscribe('/topic/processImage', function (result) {
+
+					//受信したデータから必要な物を取り出す。
+					const nameData = JSON.parse(result.body).name;
+					const imageData = JSON.parse(result.body).imageBase64;
+
+
+
+					//pタグを生成
+					const pTag = document.createElement("p");
+					pTag.textContent = nameData;
+
+					//練習問題用//
+					//送られてきたデータからmsgを取り出し。
+					const msgData = JSON.parse(result.body).msg;
+					//pタグの生成～appendchild
+					const msgTag = document.createElement("p");
+					msgTag.textContent = msgData;
+					document.getElementById("messages").appendChild(msgTag);
+
+
+					//imgタグを生成
+					const imgTag = document.createElement("img");
+					imgTag.src = "data:image/png;base64," + imageData;
+
+					//divタグ内に作ったタグを突っ込む。
+					document.getElementById("messages").appendChild(pTag);
+					document.getElementById("messages").appendChild(imgTag);
+				});
+				////////////////////////////////////////////////////////////////////////
+
+				/////////////コールバック関数(Springからのリターンを受け取る所)///////////
+				stompClient.subscribe('/topic/processImage2', function (result) {
+
+					//resultから名前を取得
+					const nameData = JSON.parse(result.body).name;
+
+					//resultから画像を取得。
+					const imageData = JSON.parse(result.body).imageBase64;
+
+					//どのイメージタグに表示するかを決定。
+					//imgタグのすぐ上にあるpタグの値を取得して、
+					//resultから取り出したnameと同じかどうかを判定する。
+					const p1 = document.getElementById("user1").textContent;
+					const p2 = document.getElementById("user2").textContent;
+					const p3 = document.getElementById("user3").textContent;
+					const p4 = document.getElementById("user4").textContent;
+					const p5 = document.getElementById("user5").textContent;
+					if (p1 == nameData || p1 == "") {
+						//imgタグに表示する画像を更新
+						const imgTag = document.getElementById("live1");
+						imgTag.src = "data:image/png;base64," + imageData;
+						//pタグ更新
+						document.getElementById("user1").textContent = nameData;
+					} else if (p2 == nameData || p2 == "") {
+						//imgタグに表示する画像を更新
+						const imgTag = document.getElementById("live2");
+						imgTag.src = "data:image/png;base64," + imageData;
+						//pタグ更新
+						document.getElementById("user2").textContent = nameData;
+					} else if (p3 == nameData || p3 == "") {
+						//imgタグに表示する画像を更新
+						const imgTag = document.getElementById("live3");
+						imgTag.src = "data:image/png;base64," + imageData;
+						//pタグ更新
+						document.getElementById("user3").textContent = nameData;
+					} else if (p4 == nameData || p4 == "") {
+						//imgタグに表示する画像を更新
+						const imgTag = document.getElementById("live4");
+						imgTag.src = "data:image/png;base64," + imageData;
+						//pタグ更新
+						document.getElementById("user4").textContent = nameData;
+					} else if (p5 == nameData || p5 == "") {
+						//imgタグに表示する画像を更新
+						const imgTag = document.getElementById("live5");
+						imgTag.src = "data:image/png;base64," + imageData;
+						//pタグ更新
+						document.getElementById("user5").textContent = nameData;
+					}
+					;
+				});
+				////////////////////////////////////////////////////////////////////////
+			});
+		}
+
+		////////////送信ボタンを推したときの処理/////////////
+		function clickBtn2() {
+			//名前の入力欄に撃たれた文字を取得。
+			const pname = document.getElementById("pname").value;
+
+			//【練習問題用】
+			//メッセージの入力欄に撃たれた文字を取得。
+			const msg = document.getElementById("msg").value;
+
+			//WEBカメラの映像をキャプチャして、Base64データとして取得。
+			const base64Data = getVideoImageBase64()
+
+			//JSONデータを作る。
+			const sendData = JSON.stringify({'name': pname, 'imageBase64': base64Data, 'msg': msg});
+
+			// 画像を送信「/app/コントローラーのURL」を書く。
+			stompClient.send('/app/sendImage', {}, sendData);
+
+		}
+		/////////////////////////////////////////////////////
+
+		////////「切断」ボタンを推したときの処理/////////////
+		function clickBtn99() {
+			if (stompClient !== null) {
+				stompClient.disconnect();
+				stompClient = null;
+			}
+			console.log("Disconnected");
+		}
+		/////////////////////////////////////////////////////
+
+		////映像データをbase64で取得するためのメソッド//////
+		function getVideoImageBase64() {
+			//videoタグのDOMを取得
+			var video = document.getElementById('videoElement');
+
+			//html5のcanvasタグを生成(canvasタグはグラフィックやアニメーションを描画するためのもの。)
+			//今回はこのタグにキャプチャした画像を張り付ける。
+			var canvas = document.createElement('canvas');
+
+			//重さを考慮してWEBカメラ映像を2dとして解釈させる。
+			var context = canvas.getContext('2d');
+
+			//canvasサイズを定義。ビデオタグの大きさに合わせる。
+			canvas.width = video.videoWidth;
+			canvas.height = video.videoHeight;
+
+			//canvasにWEBカメラの映像を描画する。
+			context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+			//canvasタグに張り付けた映像のURLを取得。
+			//imgタグのsrcを取得するのと同じイメージ。
+			//興味あるならconsole.log(imageDataURL)してみよおう。
+			var imageDataURL = canvas.toDataURL('image/jpeg');
+
+			// Base64データを取得。
+			var base64Data = imageDataURL.split(',')[1];
+
+			//呼び出し元にreturn
+			return base64Data;
+		}
+	</script>
+	<script>
+		//videoタグを読み込んで変数「video」に格納する。
+		const video = document.getElementById('videoElement');
+		//pcのカメラ＆マイクの利用許可を取る。(マイクは使わないけど)
+		navigator.mediaDevices
+			.getUserMedia({
+				video: true,
+				audio: false,
+			})
+			//接続に成功した場合、カメラを移す。
+			.then((stream) => {
+				video.srcObject = stream;
+				video.play();
+			})
+			//エラーが出たらconsoleに表示させる。
+			.catch((e) => {
+				console.log(e);
+			});
+	</script>
+	<script>
+		//setIntervalはメソッド名と実行間隔(ミリ秒)を書くと、
+		//定期的にメソッドを実行してくれる。
+		//今回はControllerにデータを送る「clickBtn2」を500ミリ秒(0.5秒)毎に実行
+		setInterval(clickBtn2, 500);
+	</script>
+</body>
+
+</html>

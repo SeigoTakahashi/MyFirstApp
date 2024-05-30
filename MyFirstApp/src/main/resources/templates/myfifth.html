@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	<form th:action="@{/myfifth}" method="POST">
+		<h3>単一Stringで受ける入力欄の例</h3>
+		あなたの名前：
+		<input type="text" name="yourname"> <br>
+		あなたの血液型： <select name="yourblood">
+			<option value="atype">A型</option>
+			<option value="btype">B型</option>
+			<option value="otype">O型</option>
+			<option value="abtype">AB型</option>
+		</select>
+		<br>
+		あなたの誕生日：<input type="date" name="yourbirth">
+
+		<h3>配列Stringで受ける入力欄の例</h3>
+		あなたの趣味：<br>
+		<input name="yourhobby" type="checkbox" value="base">野球<br>
+		<input name="yourhobby" type="checkbox" value="soccer">サッカー<br>
+		<input name="yourhobby" type="checkbox" value="anime">アニメ<br>
+		<input name="yourhobby" type="checkbox" value="movie"> 映画<br>
+		<input name="yourhobby" type="checkbox" value="game">ゲーム<br>
+		<input name="yourhobby" type="checkbox" value="comic"> 漫画<br>
+		<input name="yourhobby" type="checkbox" value="granbluefantasy">グラブル<br>
+		保有資格：<br>
+		<input name="cer" type="checkbox" value="certify">サーティファイ3級<br>
+		<input name="cer" type="checkbox" value="fe">FE<br>
+		<input name="cer" type="checkbox" value="java">Java3級<br>
+		好きな食べ物：<br>
+		<input name="fried" type="checkbox" value="aji">アジフライ<br>
+		<input name="fried" type="checkbox" value="ika">イカフライ<br>
+		<input name="fried" type="checkbox" value="ebi">エビフライ<br>
+		<input type="submit">
+	</form>
+	<hr>
+	↓入力した内容↓<br>
+	趣味:<br>
+	<th:block th:each="hobby : ${hobbylist}">
+		<p th:text="${hobby}"></p>
+	</th:block>
+	保有資格:<br>
+	<th:block th:each="cer : ${cerlist}">
+		<p th:text="${cer}"></p>
+	</th:block>
+	好きな食べ物:<br>
+	<th:block th:each="fried : ${friedlist}">
+		<p th:text="${fried}"></p>
+	</th:block>
+</body>
+
+</html>

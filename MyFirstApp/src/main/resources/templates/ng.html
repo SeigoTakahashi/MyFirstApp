@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<link rel="stylesheet" href="/jsassets/style.css">
+	<link rel="stylesheet" href="/css/ng.css">
+	<link rel="shortcut icon" href="/jsassets/favicon.ico">
+	<title>Insert title here</title>
+</head>
+
+<body>
+	<header>
+		<div class="container">
+			<h1>エラー</h1>
+		</div>
+	</header>
+	<main>
+		<div class="container" id="work">
+			<section>
+				<div id="work1">
+					<form th:action="@{/myng}" method="POST">
+						<p>正しいIDとパスワードを入力してください</p>
+						<input type="submit" value="再度ログイン">
+					</form>
+				</div>
+			</section>
+		</div>
+	</main>
+	<footer>
+		<div class="container">
+			<p>Javaフレームワーク</p>
+		</div>
+	</footer>
+</body>
+
+</html>

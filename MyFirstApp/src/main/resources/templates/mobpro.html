@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+	<h2>モブプロ復習問題</h2>
+	<h3>①一覧表示ページ</h3>
+	
+		<table class="table">
+		<tr>
+			<th>役割</th>
+			<th>名前</th>
+			<th>良いところ</th>
+		</tr>
+		<!-- DBの値を表示する。コメントを外してね。冊子の11ページ参考に。-->
+		<tr th:each="tango : ${list}">
+			<td th:text="${tango.role}"></td>
+			<td th:text="${tango.name}"></td>
+			<td th:text="${tango.goodpoint}"></td>
+		</tr>
+		
+	</table>
+	
+	<hr>
+	
+	<h3>②登録用form</h3>
+	<!-- formタグは冊子の6ページ、７ページを見ながら考えてみると良いかも！-->
+	<form th:action="@{/mobIns}" method="POST">
+		役割<input type="text" name="role">
+		名前<input type="text" name="name">
+		良いところ<input type="text" name="goodpoint">
+		<input type="submit" value="登録する">
+	</form>
+	
+	<hr>
+	<h3>③更新用form</h3>
+	<!-- formタグは冊子の6ページ、７ページを見ながら考えてみると良いと言われている。-->
+		<form th:action="@{/mobUpd}" method="POST">
+		
+		名前<input type="text" name="name">
+		<br>
+		役割<input type="text" name="role">
+		良いところ<input type="text" name="goodpoint">
+		<input type="submit" value="更新する">
+	</form>
+	<hr>
+	<h3>④???</h3>
+	<form>
+	</form>
+	
+</body>
+</html>

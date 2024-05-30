@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/css/myfifthfinal.css" />
+	<script src="/js/myfifthfinal.js"></script>
+	<title>Insert title here</title>
+</head>
+
+<body>
+	<form th:action="@{/fifthfinal}" method="POST">
+		
+		好きなお寿司：<br>
+		<input name="sushi" type="checkbox" value="maguro">マグロ<br>
+		<input name="sushi" type="checkbox" value="ika">イカ<br>
+		<input name="sushi" type="checkbox" value="tamago">たまご<br>
+		<input type="submit">
+	</form>
+	<hr>
+	↓入力した内容↓<br>
+	趣味:<br>
+	<th:block th:each="sushi : ${sushilist}">
+		<p th:text="${sushi}"></p>
+	</th:block>
+	
+</body>
+
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+</head>
+<body>
+
+	DBの内容:<br>
+	<th:block th:each="item : ${itemslist}">
+		<p th:text="${item.item_id}"></p>
+		<p th:text="${item.item_name}"></p>
+		<p th:text="${item.item_price}"></p>
+	</th:block>	
+</body>
+</html>

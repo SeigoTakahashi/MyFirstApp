@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Spring　挑戦問題</title>
+</head>
+
+<body>
+	<h2>商品情報を登録する！</h2>
+	<form th:action="@{/itemregist}" method="POST" enctype="multipart/form-data">
+
+		商品ID(数値)：<input type="number" name="item_id"> <br>
+		商品名：<input type="text" name="item_name"> <br>
+		価格：<input type="text" name="item_price"> <br>
+		商品イメージ：<input type="file" name="upimage"><br>
+		<input type="submit">
+	</form>
+
+	<hr>
+	<h2>更新する！</h2>
+	<form th:action="@{/itemupdate}" method="POST" enctype="multipart/form-data">
+
+		更新対象の商品ID(数値)：<input type="number" name="item_id"> <br>
+		商品名：<input type="text" name="item_name"> <br>
+		価格：<input type="text" name="item_price"> <br>
+		商品イメージ：<input type="file" name="upimage"><br>
+		<input type="submit">
+	</form>
+	<hr>
+	<h2>削除する！</h2>
+	<form th:action="@{/itemdelete}" method="POST" enctype="multipart/form-data">
+
+		削除対象の商品ID(数値)：<input type="number" name="item_id"> <br>
+		<input type="submit">
+	</form>
+	<hr>
+	DBの内容:<br>
+	<th:block th:each="result : ${selectResult}">
+		【商品ID】<p th:text="${result.item_id}"></p>
+		【商品名】<p th:text="${result.item_name}"></p>
+		【価格】<p th:text="${result.item_price}"></p>
+		【イメージ】<img th:src="${'data:image/png;base64,' + result.item_image}">
+		<hr>
+	</th:block>
+</body>
+
+</html>
